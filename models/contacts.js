@@ -1,37 +1,42 @@
 const fs = require("fs/promises");
-const { Contact } = require("../contact.schema");
+const { Contact } = require("../modules/contacts/contact.schema");
 
-const listContacts = async () => {
-  const contacts = await Contact.find();
+const listContacts = async (user) => {
+  const contacts = await Contact.find({ owner: user.id });
   return contacts;
 };
 
-const getContactById = async (contactId) => {
-  const contact = await Contact.findOne({ _id: contactId });
+const getContactById = async (contactId, user) => {
+  const contact = await Contact.findOne({ _id: contactId, owner: user.id });
   return contact;
 };
 
-const removeContact = async (contactId) => {
-  const result = await Contact.findOneAndDelete({ _id: contactId });
+const removeContact = async (contactId, user) => {
+  const result = await Contact.findOneAndDelete({
+    _id: contactId,
+    owner: user.id,
+  });
   return result;
 };
 
-const addContact = async (body) => {
+const addContact = async (body, user) => {
   const contact = new Contact({
     name: body.name,
     email: body.email,
     phone: body.phone,
     favorite: body.favorite,
+    owner: user.id,
   });
 
   contact.save();
   return contact;
 };
 
-const updateContact = async (contactId, body) => {
+const updateContact = async (contactId, body, user) => {
   const result = await Contact.findOneAndUpdate(
     {
       _id: contactId,
+      owner: user.id,
     },
     {
       $set: {
@@ -45,10 +50,11 @@ const updateContact = async (contactId, body) => {
   return contact;
 };
 
-const updateStatusContact = async (contactId, body) => {
+const updateStatusContact = async (contactId, body, user) => {
   await Contact.findOneAndUpdate(
     {
       _id: contactId,
+      owner: user.id,
     },
     {
       $set: {
