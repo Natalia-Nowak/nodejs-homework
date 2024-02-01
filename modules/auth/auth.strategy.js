@@ -4,7 +4,7 @@ const { User } = require("../users/user.schema");
 
 const strategy = new passportJwt.Strategy(
   {
-    secretOrKey: "secret",
+    secretOrKey: process.env.JWT_SECRET,
     jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderAsBearerToken(),
   },
   (payload, done) => {
