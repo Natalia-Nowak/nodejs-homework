@@ -1,18 +1,26 @@
 const { User } = require("./user.schema");
 
 const getUsers = async (req, res) => {
-  const users = await User.find();
-  return res.json({ data: users });
+  try {
+    const users = await User.find();
+    return res.json({ data: users });
+  } catch (error) {
+    return res.status(500).json({ message: "Error" });
+  }
 };
 
 const getUserById = async (req, res) => {
-  const user = await User.findOne({ _id: req.params.id });
+  try {
+    const user = await User.findOne({ _id: req.params.id });
 
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({ user });
+  } catch (error) {
+    return res.status(500).json({ message: "Error" });
   }
-
-  return res.status(200).json({ user });
 };
 
 const createUser = async (req, res) => {
@@ -31,23 +39,31 @@ const createUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { id } = req.params;
-  const { email, password, subscription, token } = req.body;
+  try {
+    const { id } = req.params;
+    const { email, password, subscription, token } = req.body;
 
-  user.email = email;
-  user.subscription = subscription;
-  user.token = token;
+    user.email = email;
+    user.subscription = subscription;
+    user.token = token;
 
-  if (password) {
-    user.setPassword(password);
+    if (password) {
+      user.setPassword(password);
+    }
+    await user.save();
+    return res.json({ data: result });
+  } catch (error) {
+    return res.status(500).json({ message: "Error" });
   }
-  await user.save();
-  return res.json({ data: result });
 };
 
 const deleteUser = async (req, res) => {
-  const result = await User.findOneAndDelete({ _id: req.params.id });
-  return res.json({ data: result });
+  try {
+    const result = await User.findOneAndDelete({ _id: req.params.id });
+    return res.json({ data: result });
+  } catch (error) {
+    return res.status(500).json({ message: "Error" });
+  }
 };
 
 module.exports = {
