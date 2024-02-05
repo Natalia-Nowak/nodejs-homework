@@ -1,5 +1,8 @@
 const app = require("./app");
+const cors = require("cors");
 
-app.listen(3000, () => {
-  console.log("Server running. Use our API on port: 3000");
-});
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+  })
+);

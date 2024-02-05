@@ -1,7 +1,8 @@
 const express = require("express");
+const path = require("path");
 const logger = require("morgan");
-const cors = require("cors");
 const mongoose = require("mongoose");
+const fs = require("fs").promises;
 require("dotenv").config();
 require("./modules/auth/auth.strategy");
 
@@ -20,15 +21,24 @@ const connection = mongoose.connect(process.env.DATABASE_URL);
 const app = express();
 app.use(express.json());
 
+const isAccessible = (folderPath) => {
+  return fs
+    .access(folderPath)
+    .then(() => true)
+    .catch(() => false);
+};
+
+const createFolderIfNotExist = async (folderPath) => {
+  if (!(await isAccessible(folderPath))) {
+    await fs.mkdir(folderPath);
+  }
+};
+
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 app.use(logger(formatsLogger));
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-  })
-);
 
 app.use(express.json());
+app.use(express.static("public"));
 
 app.use("/api/contacts", contactsRouter);
 app.use("/users", usersRouting);
@@ -38,8 +48,8 @@ app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
 });
 
-app.use((err, req, res, next) => {
-  res.status(500).json({ message: err.message });
+app.listen(3000, () => {
+  console.log("Serwer działa na porcie 3000");
 });
 
 module.exports = app;

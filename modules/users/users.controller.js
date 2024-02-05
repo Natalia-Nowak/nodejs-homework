@@ -1,4 +1,5 @@
 const { User } = require("./user.schema");
+const gravatar = require("gravatar");
 
 const getUsers = async (req, res) => {
   try {
@@ -28,11 +29,16 @@ const createUser = async (req, res) => {
     const user = new User({
       email: req.body.email,
       subscription: "starter",
+      avatarURL: gravatar.url(req.body.email),
     });
     user.setPassword(req.body.password);
 
     await user.save();
-    return res.json({ email: user.email, subscription: user.subscription });
+    return res.json({
+      email: user.email,
+      subscription: user.subscription,
+      avatarURL: user.avatarURL,
+    });
   } catch (error) {
     return res.status(400).json({ message: "Użytkownik istnieje" });
   }
@@ -66,10 +72,15 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const updateAvatar = async (req, res) => {
+  return res.status(200).json({ message: "Plik wrzucony pomyślnie" });
+};
+
 module.exports = {
   getUsers,
   getUserById,
   createUser,
   updateUser,
   deleteUser,
+  updateAvatar,
 };
