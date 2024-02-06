@@ -87,7 +87,7 @@ const current = async (req, res) => {
     return res.json({
       email: foundUser.email,
       subscription: foundUser.subscription,
-      avatarURL: foundUser.email,
+      avatarURL: foundUser.avatarURL,
     });
   } catch (error) {
     return res.status(500).json({ message: "Error" });

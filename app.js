@@ -49,6 +49,8 @@ app.use((req, res) => {
 });
 
 app.listen(3000, () => {
+  createFolderIfNotExist(path.join(process.cwd(), "/tmp"));
+  createFolderIfNotExist(path.join(process.cwd(), "/public/avatars"));
   console.log("Serwer działa na porcie 3000");
 });
 

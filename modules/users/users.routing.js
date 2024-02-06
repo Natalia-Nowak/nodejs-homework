@@ -28,10 +28,15 @@ const storageTmp = multer.diskStorage({
 });
 
 const uploadMiddlewareTmp = multer({
-  storageTmp,
+  storage: storageTmp,
 });
 
-router.patch("/avatars", uploadMiddlewareTmp.single("avatar"), updateAvatar);
+router.patch(
+  "/avatars",
+  auth,
+  uploadMiddlewareTmp.single("avatar"),
+  updateAvatar
+);
 router.get("/", auth, getUsers);
 router.get("/:id", auth, getUserById);
 router.post("/", auth, createUser);
