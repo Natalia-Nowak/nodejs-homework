@@ -8,6 +8,8 @@ const {
   updateUser,
   deleteUser,
   updateAvatar,
+  verifyToken,
+  resendEmail,
 } = require("./users.controller");
 const { auth } = require("../auth/auth.middleware");
 
@@ -37,6 +39,8 @@ router.patch(
   uploadMiddlewareTmp.single("avatar"),
   updateAvatar
 );
+router.get("/verify/:verificationToken", verifyToken);
+router.post("/verify", resendEmail);
 router.get("/", auth, getUsers);
 router.get("/:id", auth, getUserById);
 router.post("/", auth, createUser);
